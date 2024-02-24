@@ -14,10 +14,13 @@ use App\Http\Controllers\PostController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('home');
-// });
-
+// posts
 Route::get('/',[PostController::class,'index']);
+Route::get('/posts/{post}',[PostController::class,'show'])->name('post.show');
+Route::get('/post/create',[PostController::class,'create'])->name('post.create');
+Route::post('/post/create',[PostController::class,'store'])->name('post.create');
+Route::get('/post/{post}/edit',[PostController::class,'edit'])->name('post.edit');
+Route::put('/post/{post}/update',[PostController::class,'update'])->name('post.update');
+Route::delete('/post/{post}/destory',[PostController::class,'destory'])->name('post.destory');
 
 
