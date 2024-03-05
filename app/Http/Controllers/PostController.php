@@ -3,69 +3,83 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     // show all post page
     public function index()
     {
-        $data = Post::orderBy('id','desc')->get();
+        $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
         return view('home',compact('data'));
     }
 
     // show single post page
     public function show(Post $post)
     {
+        $this->authorize('view',$post);
         return view('show',compact('post'));
     }
 
     // direct post create page
     public function create()
     {
-        return view('create');
+        $categories = Category::all();
+        return view('create',compact('categories'));
     }
 
     // new post create
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => ['required','max:100','unique:posts,title'],
-            'description' => 'required',
-        ],[
-            'title.required' => 'You need to fill post title ...',
-            'description.required' => 'You need to fill post description ...',
-        ]);
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-        ];
+        $this->ValidateFormData($request);
+        $data = $this->FormData($request);
         Post::create($data);
-        return redirect('/');
+        return redirect()->route('post#list');
     }
 
     // direct post edit page
     public function edit(Post $post)
     {
-        return view('edit',compact('post'));
+        $categories = Category::all();
+        return view('edit',compact('post','categories'));
     }
 
     // update post data
     public function update(Post $post,Request $request)
     {
-        $id = $post->id;
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description
-        ];
+        $this->ValidateFormData($request);
+        $data = $this->FormData($request);
         $post->update($data);
-        return redirect('/');
+        return redirect()->route('post#list');
     }
 
     // delete post
     public function destory(Post $post)
     {
         $post->delete();
-        return redirect('/');
+        return redirect()->route('post#list');
+    }
+
+    // validate form data
+    private function ValidateFormData($request)
+    {
+        return $request->validate([
+            'title' => ['required','max:100','unique:posts,title'],
+            'description' => 'required',
+            'category_id' => 'required',
+        ]);
+    }
+
+    // Form data
+    private function FormData($request)
+    {
+        return [
+            'title' => $request->title,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'user_id'   => auth()->id()
+        ];
     }
 }

@@ -3,7 +3,13 @@
 @section('content')
     {{-- <p>{{ $data }}</p> --}}
     <div class="container">
-        <a href="/post/create" class="btn btn-success my-3">New Post</a>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="">
+                <a href="/post/create" class="btn btn-success my-3">New Post</a>
+                <a href="/logout" class="btn btn-warning my-3">Logout</a>
+            </div>
+            <p class=" bg-success-subtle rounded px-2" style="float: right">{{ auth()->user()->name }}</p>
+        </div>
         <div class="card">
             <div class="card-header text-center">
               Contents

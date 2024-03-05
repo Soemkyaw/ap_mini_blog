@@ -21,8 +21,19 @@
                       <div class=" alert alert-danger my-2">{{ $message }}</div>
                   @enderror
                 </div>
+                <div class="mb-3">
+                  <label for="example99" class="form-label">Select Category</label>
+                  <select name="category_id" class="form-select">
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}">{{ Str::ucfirst($category->name) }}</option>
+                    @endforeach
+                  </select>
+                  @error('description')
+                      <div class=" alert alert-danger my-2">{{ $message }}</div>
+                  @enderror
+                </div>
                 <button type="submit" class="btn btn-primary">Create</button>
-                <a href="/" class="btn btn-dark">Back</a>
+                <a href="{{ route('post#list') }}" class="btn btn-dark">Back</a>
             </form>
         </div>
     </div>
