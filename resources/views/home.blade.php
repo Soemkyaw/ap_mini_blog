@@ -10,6 +10,12 @@
             </div>
             <p class=" bg-success-subtle rounded px-2" style="float: right">{{ auth()->user()->name }}</p>
         </div>
+        @if(session('success'))
+            <p class="alert alert-info">{{ session('success') }}</p>
+        @endif
+        @if(session('delete'))
+            <p class="alert alert-danger">{{ session('delete') }}</p>
+        @endif
         <div class="card">
             <div class="card-header text-center">
               Contents

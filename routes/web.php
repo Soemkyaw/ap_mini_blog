@@ -1,13 +1,19 @@
 <?php
 
+use App\Test;
+use App\Container;
+use App\TestFacade;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 
+// Route::get('/',function(){
+//     return (TestFacade::smth());
+// });
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('/dashboard', '/');
-    Route::get('/dashboard',[PostController::class,'index']);
+    Route::get('/',[PostController::class,'index']);
     Route::get('/posts',[PostController::class,'index'])->name('post#list');
     Route::get('/posts/{post}',[PostController::class,'show'])->name('post.show');
     Route::get('/post/create',[PostController::class,'create'])->name('post.create');

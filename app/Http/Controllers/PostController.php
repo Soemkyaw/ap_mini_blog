@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Mail\PostStored;
 use App\Models\Category;
+use App\Mail\PostDeleted;
+use App\Mail\PostUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
     // show all post page
     public function index()
     {
+        // Mail::to('koko@gmail.com')->send(new PostStored());
         $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
         return view('home',compact('data'));
     }
@@ -35,8 +40,9 @@ class PostController extends Controller
     {
         $this->ValidateFormData($request);
         $data = $this->FormData($request);
-        Post::create($data);
-        return redirect()->route('post#list');
+        $post = Post::create($data);
+        // Mail::to('koko@gmail.com')->send(new PostStored($post));
+        return redirect()->route('post#list')->with('success',config('message.msg.create'));
     }
 
     // direct post edit page
@@ -52,14 +58,17 @@ class PostController extends Controller
         $this->ValidateFormData($request);
         $data = $this->FormData($request);
         $post->update($data);
-        return redirect()->route('post#list');
+        $updatePost = Post::where('id',$post->id)->first();
+        // Mail::to('koko@gmail.com')->send(new PostUpdated($updatePost));
+        return redirect()->route('post#list')->with('success',config('message.msg.update'));
     }
 
     // delete post
     public function destory(Post $post)
     {
         $post->delete();
-        return redirect()->route('post#list');
+        // Mail::to('koko@gmail.com')->send(new PostDeleted());
+        return redirect()->route('post#list')->with('delete',config('message.msg.delete'));
     }
 
     // validate form data
