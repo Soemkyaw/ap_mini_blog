@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Mail\PostStored;
 use App\Models\Category;
 use App\Mail\PostDeleted;
 use App\Mail\PostUpdated;
 use Illuminate\Http\Request;
+use App\Events\PostCreatedEvent;
+use App\Notifications\PostCreated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class PostController extends Controller
 {
     // show all post page
     public function index()
     {
+        // $user = User::find(1);
+        // $user->notify(new PostCreated());
+        // Notification::send($user, new PostCreated());
         // Mail::to('koko@gmail.com')->send(new PostStored());
         $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
         return view('home',compact('data'));
@@ -41,7 +48,7 @@ class PostController extends Controller
         $this->ValidateFormData($request);
         $data = $this->FormData($request);
         $post = Post::create($data);
-        // Mail::to('koko@gmail.com')->send(new PostStored($post));
+        event(new PostCreatedEvent($post));
         return redirect()->route('post#list')->with('success',config('message.msg.create'));
     }
 

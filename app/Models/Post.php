@@ -29,16 +29,16 @@ class Post extends Model
 
     protected static function booted(): void
     {
-        static::created(function ($post) {
-            Mail::to('koko@gmail.com')->send(new PostStored($post));
-        });
+        // static::created(function ($post) {
+        //     Mail::to('koko@gmail.com')->send(new PostStored($post));
+        // });
 
-        static::updated(function ($updatePost) {
-            Mail::to('koko@gmail.com')->send(new PostUpdated($updatePost));
-        });
+        // static::updated(function ($updatePost) {
+        //     Mail::to('koko@gmail.com')->send(new PostUpdated($updatePost));
+        // });
 
-        static::deleted(function () {
-            Mail::to('koko@gmail.com')->send(new PostDeleted());
-        });
+        // static::deleted(function () {
+        //     Mail::to('koko@gmail.com')->send(new PostDeleted());
+        // });
     }
 }
